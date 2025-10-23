@@ -58,8 +58,12 @@ public class GeneticAlgorithm {
                 }
 
                 // Mutation
-                mutationOperator.mutate(child1);
-                mutationOperator.mutate(child2);
+                if (Math.random() < mutationProbability) {
+                    mutationOperator.mutate(child1);
+                }
+                if (Math.random() < mutationProbability) {
+                    mutationOperator.mutate(child2);
+                }
 
                 // Handle infeasible
                 if (infeasibleHandler != null) {

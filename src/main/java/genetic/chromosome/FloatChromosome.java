@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Floating-point chromosome implementation using double array.
- */
 public class FloatChromosome extends Chromosome {
     private double[] genes;
     private double minValue;
@@ -28,7 +25,6 @@ public class FloatChromosome extends Chromosome {
 
     @Override
     public List<Chromosome> crossover(Chromosome other) {
-        // Single-point crossover
         FloatChromosome parent2 = (FloatChromosome) other;
         int point = random.nextInt(genes.length);
         FloatChromosome offspring1 = new FloatChromosome(genes.length, minValue, maxValue);
@@ -52,10 +48,9 @@ public class FloatChromosome extends Chromosome {
 
     @Override
     public void mutate() {
-        // Gaussian mutation
         for (int i = 0; i < genes.length; i++) {
             if (random.nextDouble() < 0.05) {
-                double stdDev = (maxValue - minValue) * 0.1; // 10% of range
+                double stdDev = (maxValue - minValue) * 0.1;
                 genes[i] += random.nextGaussian() * stdDev;
                 genes[i] = Math.max(minValue, Math.min(maxValue, genes[i]));
             }
@@ -77,5 +72,13 @@ public class FloatChromosome extends Chromosome {
 
     public double[] getGenes() {
         return genes.clone();
+    }
+
+    public double getMinValue() {
+        return minValue;
+    }
+
+    public double getMaxValue() {
+        return maxValue;
     }
 }

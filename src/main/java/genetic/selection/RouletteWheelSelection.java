@@ -4,9 +4,6 @@ import genetic.Population;
 import genetic.chromosome.Chromosome;
 import java.util.Random;
 
-/**
- * Roulette wheel selection strategy.
- */
 public class RouletteWheelSelection implements SelectionStrategy {
     private Random random = new Random();
 

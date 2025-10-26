@@ -4,9 +4,6 @@ import genetic.chromosome.BinaryChromosome;
 import genetic.chromosome.Chromosome;
 import java.util.Random;
 
-/**
- * Bit flip mutation for binary chromosomes.
- */
 public class BinaryBitFlip implements MutationOperator {
     private double mutationRate;
     private Random random = new Random();
@@ -16,7 +13,7 @@ public class BinaryBitFlip implements MutationOperator {
     }
 
     @Override
-    public void mutate(Chromosome chromosome) {
+    public void mutate(Chromosome chromosome, int currentGeneration, int maxGenerations) {
         if (chromosome instanceof BinaryChromosome) {
             BinaryChromosome binChrom = (BinaryChromosome) chromosome;
             boolean[] genes = binChrom.getGenes();

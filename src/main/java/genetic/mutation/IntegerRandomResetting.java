@@ -4,11 +4,11 @@ import genetic.chromosome.Chromosome;
 import genetic.chromosome.IntegerChromosome;
 import java.util.Random;
 
-public class IntegerSwap implements MutationOperator {
+public class IntegerRandomResetting implements MutationOperator {
     private double mutationRate;
     private Random random = new Random();
 
-    public IntegerSwap(double mutationRate) {
+    public IntegerRandomResetting(double mutationRate) {
         this.mutationRate = mutationRate;
     }
 
@@ -17,12 +17,11 @@ public class IntegerSwap implements MutationOperator {
         if (chromosome instanceof IntegerChromosome) {
             IntegerChromosome intChrom = (IntegerChromosome) chromosome;
             int[] genes = intChrom.getGenes();
+            int minValue = intChrom.getMinValue();
+            int maxValue = intChrom.getMaxValue();
             for (int i = 0; i < genes.length; i++) {
                 if (random.nextDouble() < mutationRate) {
-                    int j = random.nextInt(genes.length);
-                    int temp = genes[i];
-                    genes[i] = genes[j];
-                    genes[j] = temp;
+                    genes[i] = random.nextInt(maxValue - minValue + 1) + minValue;
                 }
             }
         }

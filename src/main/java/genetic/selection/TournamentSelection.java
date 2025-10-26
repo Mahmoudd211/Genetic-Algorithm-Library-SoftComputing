@@ -4,9 +4,6 @@ import genetic.Population;
 import genetic.chromosome.Chromosome;
 import java.util.Random;
 
-/**
- * Tournament selection strategy.
- */
 public class TournamentSelection implements SelectionStrategy {
     private int tournamentSize;
     private Random random = new Random();

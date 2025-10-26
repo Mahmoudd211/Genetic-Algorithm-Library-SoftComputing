@@ -1,0 +1,7 @@
+- Add Scanner import to CaseStudyApplication.java
+- Add decodeChromosome method to convert any chromosome to double[]
+- Modify FitnessFunction to use decodeChromosome
+- Modify InfeasibleHandler to adjust decoded values and encode back
+- Add menu prompts for chromosome type, selection, crossover, mutation, replacement
+- Set prototype based on chromosome choice
+- Test the application

@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Integer chromosome implementation using integer array.
- */
 public class IntegerChromosome extends Chromosome {
     private int[] genes;
     private int minValue;
@@ -28,7 +25,6 @@ public class IntegerChromosome extends Chromosome {
 
     @Override
     public List<Chromosome> crossover(Chromosome other) {
-        // Single-point crossover
         IntegerChromosome parent2 = (IntegerChromosome) other;
         int point = random.nextInt(genes.length);
         IntegerChromosome offspring1 = new IntegerChromosome(genes.length, minValue, maxValue);
@@ -52,7 +48,6 @@ public class IntegerChromosome extends Chromosome {
 
     @Override
     public void mutate() {
-        // Swap mutation
         for (int i = 0; i < genes.length; i++) {
             if (random.nextDouble() < 0.05) {
                 int j = random.nextInt(genes.length);
@@ -78,5 +73,13 @@ public class IntegerChromosome extends Chromosome {
 
     public int[] getGenes() {
         return genes.clone();
+    }
+
+    public int getMinValue() {
+        return minValue;
+    }
+
+    public int getMaxValue() {
+        return maxValue;
     }
 }

@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * One-point crossover operator.
- */
 public class OnePointCrossover implements CrossoverOperator {
     private Random random = new Random();
 
@@ -18,12 +15,39 @@ public class OnePointCrossover implements CrossoverOperator {
         Chromosome offspring1 = parent1.copy();
         Chromosome offspring2 = parent2.copy();
 
-        // Assuming chromosomes have getGenes and setGenes methods, but since abstract, use copy and modify
-        // For simplicity, assume chromosomes are FloatChromosome for now, but this is generic
-        // Actually, since crossover is in Chromosome, but to make it generic, perhaps modify Chromosome to have a swapGenes method
-        // For now, implement for FloatChromosome as example
 
-        if (parent1 instanceof genetic.chromosome.FloatChromosome && parent2 instanceof genetic.chromosome.FloatChromosome) {
+
+        if (parent1 instanceof genetic.chromosome.BinaryChromosome && parent2 instanceof genetic.chromosome.BinaryChromosome) {
+            genetic.chromosome.BinaryChromosome p1 = (genetic.chromosome.BinaryChromosome) parent1;
+            genetic.chromosome.BinaryChromosome p2 = (genetic.chromosome.BinaryChromosome) parent2;
+            genetic.chromosome.BinaryChromosome o1 = (genetic.chromosome.BinaryChromosome) offspring1;
+            genetic.chromosome.BinaryChromosome o2 = (genetic.chromosome.BinaryChromosome) offspring2;
+
+            boolean[] g1 = p1.getGenes();
+            boolean[] g2 = p2.getGenes();
+            boolean[] og1 = o1.getGenes();
+            boolean[] og2 = o2.getGenes();
+
+            for (int i = point; i < length; i++) {
+                og1[i] = g2[i];
+                og2[i] = g1[i];
+            }
+        } else if (parent1 instanceof genetic.chromosome.IntegerChromosome && parent2 instanceof genetic.chromosome.IntegerChromosome) {
+            genetic.chromosome.IntegerChromosome p1 = (genetic.chromosome.IntegerChromosome) parent1;
+            genetic.chromosome.IntegerChromosome p2 = (genetic.chromosome.IntegerChromosome) parent2;
+            genetic.chromosome.IntegerChromosome o1 = (genetic.chromosome.IntegerChromosome) offspring1;
+            genetic.chromosome.IntegerChromosome o2 = (genetic.chromosome.IntegerChromosome) offspring2;
+
+            int[] g1 = p1.getGenes();
+            int[] g2 = p2.getGenes();
+            int[] og1 = o1.getGenes();
+            int[] og2 = o2.getGenes();
+
+            for (int i = point; i < length; i++) {
+                og1[i] = g2[i];
+                og2[i] = g1[i];
+            }
+        } else if (parent1 instanceof genetic.chromosome.FloatChromosome && parent2 instanceof genetic.chromosome.FloatChromosome) {
             genetic.chromosome.FloatChromosome p1 = (genetic.chromosome.FloatChromosome) parent1;
             genetic.chromosome.FloatChromosome p2 = (genetic.chromosome.FloatChromosome) parent2;
             genetic.chromosome.FloatChromosome o1 = (genetic.chromosome.FloatChromosome) offspring1;

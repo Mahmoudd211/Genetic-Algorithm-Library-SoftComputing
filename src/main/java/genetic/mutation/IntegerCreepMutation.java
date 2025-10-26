@@ -4,12 +4,14 @@ import genetic.chromosome.Chromosome;
 import genetic.chromosome.IntegerChromosome;
 import java.util.Random;
 
-public class IntegerSwap implements MutationOperator {
+public class IntegerCreepMutation implements MutationOperator {
     private double mutationRate;
+    private int creepRange;
     private Random random = new Random();
 
-    public IntegerSwap(double mutationRate) {
+    public IntegerCreepMutation(double mutationRate, int creepRange) {
         this.mutationRate = mutationRate;
+        this.creepRange = creepRange;
     }
 
     @Override
@@ -17,12 +19,13 @@ public class IntegerSwap implements MutationOperator {
         if (chromosome instanceof IntegerChromosome) {
             IntegerChromosome intChrom = (IntegerChromosome) chromosome;
             int[] genes = intChrom.getGenes();
+            int minValue = intChrom.getMinValue();
+            int maxValue = intChrom.getMaxValue();
             for (int i = 0; i < genes.length; i++) {
                 if (random.nextDouble() < mutationRate) {
-                    int j = random.nextInt(genes.length);
-                    int temp = genes[i];
-                    genes[i] = genes[j];
-                    genes[j] = temp;
+                    int delta = random.nextInt(2 * creepRange + 1) - creepRange;
+                    genes[i] += delta;
+                    genes[i] = Math.max(minValue, Math.min(maxValue, genes[i]));
                 }
             }
         }

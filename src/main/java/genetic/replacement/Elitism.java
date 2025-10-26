@@ -5,9 +5,6 @@ import genetic.chromosome.Chromosome;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Elitism replacement strategy: keeps the best individuals from the current population.
- */
 public class Elitism implements ReplacementStrategy {
     private int eliteSize;
 

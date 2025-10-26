@@ -4,14 +4,12 @@ import genetic.chromosome.Chromosome;
 import genetic.chromosome.FloatChromosome;
 import java.util.Random;
 
-public class FloatGaussian implements MutationOperator {
+public class FloatUniformMutation implements MutationOperator {
     private double mutationRate;
-    private double stdDev;
     private Random random = new Random();
 
-    public FloatGaussian(double mutationRate, double stdDev) {
+    public FloatUniformMutation(double mutationRate) {
         this.mutationRate = mutationRate;
-        this.stdDev = stdDev;
     }
 
     @Override
@@ -23,12 +21,7 @@ public class FloatGaussian implements MutationOperator {
             double maxValue = floatChrom.getMaxValue();
             for (int i = 0; i < genes.length; i++) {
                 if (random.nextDouble() < mutationRate) {
-                    // Time-varying mutation: mutation size shrinks over generations
-                    double t = (double) currentGeneration / maxGenerations;
-                    double delta = (1 - t) * (maxValue - minValue) * random.nextGaussian() * stdDev;
-                    genes[i] += delta;
-                    // Clamp to bounds
-                    genes[i] = Math.max(minValue, Math.min(maxValue, genes[i]));
+                    genes[i] = minValue + (maxValue - minValue) * random.nextDouble();
                 }
             }
         }

@@ -10,9 +10,6 @@ import genetic.selection.SelectionStrategy;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Main class for the Genetic Algorithm.
- */
 public class GeneticAlgorithm {
     private int populationSize = 50;
     private int generations = 100;
@@ -43,29 +40,26 @@ public class GeneticAlgorithm {
         Population population = new Population(populationSize, prototype);
         population.evaluateFitness(fitnessFunction);
 
+        // Evolutionary loop: for each generation, create offspring via selection, crossover, mutation, then replace population
         for (int gen = 0; gen < generations; gen++) {
             List<Chromosome> offspring = new ArrayList<>();
             while (offspring.size() < populationSize) {
-                // Selection
                 Chromosome parent1 = selectionStrategy.select(population);
                 Chromosome parent2 = selectionStrategy.select(population);
 
-                // Crossover
                 Chromosome child1 = parent1.copy();
                 Chromosome child2 = parent2.copy();
                 if (Math.random() < crossoverProbability) {
                     crossoverOperator.crossover(child1, child2);
                 }
 
-                // Mutation
                 if (Math.random() < mutationProbability) {
-                    mutationOperator.mutate(child1);
+                    mutationOperator.mutate(child1, gen, generations);
                 }
                 if (Math.random() < mutationProbability) {
-                    mutationOperator.mutate(child2);
+                    mutationOperator.mutate(child2, gen, generations);
                 }
 
-                // Handle infeasible
                 if (infeasibleHandler != null) {
                     infeasibleHandler.handle(child1);
                     infeasibleHandler.handle(child2);
@@ -75,7 +69,6 @@ public class GeneticAlgorithm {
                 offspring.add(child2);
             }
 
-            // Replacement
             population = replacementStrategy.replace(population, offspring);
             population.evaluateFitness(fitnessFunction);
         }

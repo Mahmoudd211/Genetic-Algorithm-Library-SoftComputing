@@ -6,9 +6,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * Represents a population of chromosomes in the genetic algorithm.
- */
 public class Population {
     private List<Chromosome> chromosomes;
     private int size;
@@ -35,35 +32,23 @@ public class Population {
         this.fitnessFunction = fitnessFunction;
     }
 
-    /**
-     * Evaluates the fitness of all chromosomes in the population.
-     */
     public void evaluateFitness(genetic.api.FitnessFunction fitnessFunction) {
         for (Chromosome chrom : chromosomes) {
             chrom.setFitness(fitnessFunction.evaluate(chrom));
         }
     }
 
-    /**
-     * Sorts the population by fitness (ascending order).
-     */
     public void sortByFitness() {
         chromosomes.sort(Comparator.comparingDouble(Chromosome::getFitness));
     }
 
-    /**
-     * Gets the best chromosome in the population.
-     * @return The chromosome with the highest fitness.
-     */
     public Chromosome getBest() {
+        // Uses stream to find chromosome with maximum fitness
         return chromosomes.stream().max(Comparator.comparingDouble(Chromosome::getFitness)).orElse(null);
     }
 
-    /**
-     * Gets the worst chromosome in the population.
-     * @return The chromosome with the lowest fitness.
-     */
     public Chromosome getWorst() {
+        // Uses stream to find chromosome with minimum fitness
         return chromosomes.stream().min(Comparator.comparingDouble(Chromosome::getFitness)).orElse(null);
     }
 

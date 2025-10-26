@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Binary chromosome implementation using boolean array.
- */
 public class BinaryChromosome extends Chromosome {
     private boolean[] genes;
     private Random random = new Random();
@@ -24,7 +21,6 @@ public class BinaryChromosome extends Chromosome {
 
     @Override
     public List<Chromosome> crossover(Chromosome other) {
-        // Default single-point crossover for binary
         BinaryChromosome parent2 = (BinaryChromosome) other;
         int point = random.nextInt(genes.length);
         BinaryChromosome offspring1 = new BinaryChromosome(genes.length);
@@ -48,9 +44,8 @@ public class BinaryChromosome extends Chromosome {
 
     @Override
     public void mutate() {
-        // Bit flip mutation
         for (int i = 0; i < genes.length; i++) {
-            if (random.nextDouble() < 0.05) { // mutation probability
+            if (random.nextDouble() < 0.05) {
                 genes[i] = !genes[i];
             }
         }

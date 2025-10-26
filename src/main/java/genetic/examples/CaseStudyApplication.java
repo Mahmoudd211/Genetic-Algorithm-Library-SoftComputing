@@ -25,66 +25,12 @@ import genetic.replacement.GenerationalReplacement;
 import genetic.selection.SelectionStrategy;
 import genetic.selection.RouletteWheelSelection;
 import genetic.selection.TournamentSelection;
+import genetic.codec.ChromosomeToFloat;
 import java.util.Scanner;
 
 public class CaseStudyApplication {
     private static final int NUM_PLOTS = 5;
-    private static final double MOISTURE_THRESHOLD = 0.5; // Minimum soil moisture
-    private static final double[] ABSORPTION_RATES = {0.8, 0.9, 1.0, 0.7, 0.85}; // Absorption per plot
-    private static final double PENALTY_FACTOR = 100.0;
-
-    private static double[] decodeChromosome(Chromosome chromosome) {
-        if (chromosome instanceof FloatChromosome) {
-            return ((FloatChromosome) chromosome).getGenes();
-        } else if (chromosome instanceof IntegerChromosome) {
-            int[] intGenes = ((IntegerChromosome) chromosome).getGenes();
-            double[] doubleGenes = new double[intGenes.length];
-            for (int i = 0; i < intGenes.length; i++) {
-                doubleGenes[i] = (double) intGenes[i];
-            }
-            return doubleGenes;
-        } else if (chromosome instanceof BinaryChromosome) {
-            boolean[] boolGenes = ((BinaryChromosome) chromosome).getGenes();
-            // Assuming each plot is represented by a certain number of bits, e.g., 8 bits per plot for 0-255 range
-            int bitsPerPlot = 8;
-            double[] doubleGenes = new double[NUM_PLOTS];
-            for (int i = 0; i < NUM_PLOTS; i++) {
-                int value = 0;
-                for (int j = 0; j < bitsPerPlot; j++) {
-                    if (boolGenes[i * bitsPerPlot + j]) {
-                        value |= (1 << (bitsPerPlot - 1 - j));
-                    }
-                }
-                doubleGenes[i] = value / 255.0 * 10.0; // Scale to 0-10
-            }
-            return doubleGenes;
-        }
-        return new double[0];
-    }
-
-    private static void encodeChromosome(Chromosome chromosome, double[] values) {
-        if (chromosome instanceof FloatChromosome) {
-            FloatChromosome floatChrom = (FloatChromosome) chromosome;
-            double[] genes = floatChrom.getGenes();
-            System.arraycopy(values, 0, genes, 0, values.length);
-        } else if (chromosome instanceof IntegerChromosome) {
-            IntegerChromosome intChrom = (IntegerChromosome) chromosome;
-            int[] genes = intChrom.getGenes();
-            for (int i = 0; i < values.length; i++) {
-                genes[i] = (int) Math.round(values[i]);
-            }
-        } else if (chromosome instanceof BinaryChromosome) {
-            BinaryChromosome binChrom = (BinaryChromosome) chromosome;
-            boolean[] genes = binChrom.getGenes();
-            int bitsPerPlot = 8;
-            for (int i = 0; i < NUM_PLOTS; i++) {
-                int value = (int) Math.round(values[i] / 10.0 * 255.0);
-                for (int j = 0; j < bitsPerPlot; j++) {
-                    genes[i * bitsPerPlot + j] = (value & (1 << (bitsPerPlot - 1 - j))) != 0;
-                }
-            }
-        }
-    }
+    private static final int BITS_PER_PLOT = 8;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -209,42 +155,8 @@ public class CaseStudyApplication {
 
         long startTime = System.currentTimeMillis();
 
-        FitnessFunction fitnessFunction = new FitnessFunction() {
-            @Override
-            public double evaluate(Chromosome chromosome) {
-                double[] irrigation = decodeChromosome(chromosome);
-
-                double totalWater = 0.0;
-                double penalty = 0.0;
-
-                for (int i = 0; i < NUM_PLOTS; i++) {
-                    totalWater += irrigation[i];
-                    double moisture = irrigation[i] * ABSORPTION_RATES[i];
-                    if (moisture < MOISTURE_THRESHOLD) {
-                        penalty += (MOISTURE_THRESHOLD - moisture) * PENALTY_FACTOR;
-                    }
-                }
-
-                return 1.0 / (totalWater + penalty);
-            }
-        };
-
-        InfeasibleHandler infeasibleHandler = new InfeasibleHandler() {
-            @Override
-            public Chromosome handle(Chromosome chromosome) {
-                double[] irrigation = decodeChromosome(chromosome);
-
-                for (int i = 0; i < NUM_PLOTS; i++) {
-                    double moisture = irrigation[i] * ABSORPTION_RATES[i];
-                    if (moisture < MOISTURE_THRESHOLD) {
-                        irrigation[i] += (MOISTURE_THRESHOLD - moisture) / ABSORPTION_RATES[i];
-                    }
-                }
-
-                encodeChromosome(chromosome, irrigation);
-                return chromosome;
-            }
-        };
+        FitnessFunction fitnessFunction = new IrrigationFitnessFunction();
+        InfeasibleHandler infeasibleHandler = new IrrigationInfeasibleHandler();
 
 
         GeneticAlgorithm ga = new GeneticAlgorithm();
@@ -267,7 +179,7 @@ public class CaseStudyApplication {
 
 
         System.out.println("Optimal Irrigation Plan:");
-        double[] irrigation = decodeChromosome(best);
+        double[] irrigation = ChromosomeToFloat.decode(best, NUM_PLOTS, BITS_PER_PLOT);
         double totalWater = 0.0;
         for (int i = 0; i < NUM_PLOTS; i++) {
             System.out.printf("Plot %d: %.2f liters%n", i + 1, irrigation[i]);
